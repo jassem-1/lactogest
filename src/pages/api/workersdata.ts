@@ -1,7 +1,6 @@
 // pages/api/data.js
 
 let data: any = [];
-import { NextResponse } from 'next/server';
 import pool from '../../utils/postgres';
 
 const fetchData = async () => {

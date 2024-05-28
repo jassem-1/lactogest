@@ -21,7 +21,7 @@ export default async function handler(req: any, res: any) {
 
       const result = await client.query(
         'UPDATE public."Dim_Pointage" SET "ENTREE_1" = $1, "SORTIE_1" = $2, "REGIME" = $3 WHERE "ID_Pointage" = $4 RETURNING *',
-        [newEntree, newSortie, newRegime, id],
+        [newEntree, newSortie, newRegime, id]
       );
       client.release();
       res.status(200).json(result.rows[0]);
@@ -35,7 +35,7 @@ export default async function handler(req: any, res: any) {
       const client = await pool.connect();
       const result = await client.query(
         'SELECT * FROM public."Dim_Pointage" WHERE "ID_Pointage" = $1',
-        [id],
+        [id]
       );
       client.release();
       if (result.rows.length > 0) {
@@ -53,10 +53,10 @@ export default async function handler(req: any, res: any) {
       const client = await pool.connect();
       const result = await client.query(
         'DELETE FROM public."Dim_Pointage" WHERE "ID_Pointage" = $1 RETURNING *',
-        [id],
+        [id]
       );
       client.release();
-      if (result.rowCount > 0) {
+      if (result.rowCount && result.rowCount > 0) {
         res.status(200).json(result.rows[0]);
       } else {
         res.status(404).json({ message: 'Record not found' });

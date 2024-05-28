@@ -42,7 +42,7 @@ export default async function handler(req: any, res: any) {
           newsituation_familiale,
           newchef_famille,
           id,
-        ],
+        ]
       );
       client.release();
       res.status(200).json(result.rows[0]);
@@ -56,7 +56,7 @@ export default async function handler(req: any, res: any) {
       const client = await pool.connect();
       const result = await client.query(
         'SELECT * FROM public."Dim_Employe" WHERE "MATRICULE" = $1',
-        [id],
+        [id]
       );
       client.release();
       if (result.rows.length > 0) {
@@ -74,10 +74,10 @@ export default async function handler(req: any, res: any) {
       const client = await pool.connect();
       const result = await client.query(
         'DELETE FROM public."Dim_Employe" WHERE "MATRICULE" = $1 RETURNING *',
-        [id],
+        [id]
       );
       client.release();
-      if (result.rowCount > 0) {
+      if (result.rowCount && result.rowCount > 0) {
         res.status(200).json(result.rows[0]);
       } else {
         res.status(404).json({ message: 'Record not found' });

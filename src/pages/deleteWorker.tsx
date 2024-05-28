@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'; //Importation du hook useRouter depuis la bibliothèque next/navigation.
 //Ce hook est utilisé pour la navigation dans l'application Next.js.
 
-export default function deleteWorker({ id }: any) {
+export default function DeleteWorker({ id }: any) {
   //Cette fonction prend un objet { id } comme argument.
   const router = useRouter(); //router: Utilisation du hook
   //useRouter pour obtenir un objet router qui permettra la navigation.

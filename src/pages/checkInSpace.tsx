@@ -5,26 +5,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui';
-import { MoreVertical, Trash } from 'lucide-react';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+} from "@/components/ui";
+import { MoreVertical, Trash } from "lucide-react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-function checkInSpace() {
+function CheckInSpace() {
   const router = useRouter();
   const [data, setData] = useState<any>([]);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
 
   useEffect(() => {
     async function fetchdata1() {
       try {
-        const res = await fetch('http://localhost:4000/api/workersPointage')
+        const res = await fetch("http://localhost:4000/api/workersPointage")
           .then((res) => res.json())
           .then((data) => {
             setData(data);
           });
       } catch (err) {
-        console.log('Awch', err);
+        console.log("Awch", err);
       }
     }
     fetchdata1();
@@ -58,7 +58,9 @@ function checkInSpace() {
             </TableHeader>
             <TableBody>
               {data.map((data: any) => (
-                <TableRow>
+                <TableRow key={data.ID_Pointage}>
+                  {" "}
+                  {/* Added key prop here */}
                   <TableCell className="whitespace-nowrap">
                     {data.ID_Pointage}
                   </TableCell>
@@ -97,4 +99,4 @@ function checkInSpace() {
   );
 }
 
-export default checkInSpace;
+export default CheckInSpace;

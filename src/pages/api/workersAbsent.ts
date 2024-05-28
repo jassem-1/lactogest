@@ -3,7 +3,6 @@
 let data: any = []; //Variable data : Initialise une variable data comme un tableau vide.
 //Cette variable est utilisée pour stocker les données récupérées de la base de données.
 
-import { NextResponse } from 'next/server';
 //utilisé dans les middlewares de Next.js pour manipuler et personnaliser les réponses HTTP
 import pool from '../../utils/postgres';
 // pool du module de connexion à PostgreSQL.
@@ -13,8 +12,8 @@ const fetchData = async () => {
   try {
     const client = await pool.connect(); // pour établir une connexion avec la base de données PostgreSQL.
     console.log('database connected DB');
-    const result = await client.query('SELECT * FROM public."fact"');
-    //Exécute une requête pour sélectionner toutes les lignes de la table public.fact
+    const result = await client.query('SELECT * FROM public."FACT"');
+    //Exécute une requête pour sélectionner toutes les lignes de la table public.FACT
 
     const data = result.rows; //Les résultats de la requête sont stockés dans la variable data
     console.log('fetch data >>>>', data);

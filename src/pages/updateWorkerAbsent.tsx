@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function updateWorker({
+export default function UpdateWorker({
   id,
   matricule,
   H_Absences,
