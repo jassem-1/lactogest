@@ -1,30 +1,59 @@
-import { Button } from '@/components/ui';
-import { Label } from '@radix-ui/react-dropdown-menu';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+// pages/index.tsx
+import { useRouter } from "next/router";
+import { FormEvent } from "react";
 
-function Home() {
+export default function Home() {
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const response = await fetch("/api/auth/[...nextauth]", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    });
+
+    const result = await response.json();
+    if (result.token) {
+      localStorage.setItem("token", result.token);
+      router.push("/dashboard");
+    } else {
+      console.error("Failed to log in:", result.error);
+    }
+  };
+
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
-      <div className="flex-1 flex flex-col p-4 overflow-auto">
-        <div className="col-span-9">
-          <header className="flex pb-4 flex-col">
-            <h1 className="text-3xl font-bold text-teal-400">Dashboread</h1>
-            <Label className="text-sm ">Bienvenue sur votre dashboread </Label>
-          </header>
-        </div>
-        <iframe
-          title="Rapport_LactoGest"
-          className="w-full h-full"
-          src="https://app.powerbi.com/view?r=eyJrIjoiZDgzYThiNTEtM2Q0Yi00ZjM2LWFkOTYtMDNhOWQxNThmZjgwIiwidCI6ImRiZDY2NjRkLTRlYjktNDZlYi05OWQ4LTVjNDNiYTE1M2M2MSIsImMiOjl9"
-          allowFullScreen={true}
-        ></iframe>
-      </div>
-    </div>
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-2 mx-auto max-w-md mt-10"
+    >
+      <input
+        name="email"
+        type="email"
+        required
+        className="border border-black text-black"
+        placeholder="Email"
+      />
+      <input
+        name="password"
+        type="password"
+        required
+        className="border border-black text-black"
+        placeholder="Password"
+      />
+      <button type="submit">Login</button>
+      <p>
+        Dont have an account?{" "}
+        <a href="/register" className="text-blue-500">
+          Sign up
+        </a>
+      </p>
+    </form>
   );
 }
-
-export default Home;

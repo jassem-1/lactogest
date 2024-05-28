@@ -1,6 +1,8 @@
 import '@/styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -10,7 +12,23 @@ import Application from '@/components/Application';
 
 const queryClient = new QueryClient();
 
+function useAuthProtection() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const unprotectedRoutes = ['/', '/register']; // Add paths that don't require auth
+    const pathIsProtected = !unprotectedRoutes.includes(router.pathname);
+
+    if (!token && pathIsProtected) {
+      router.push('/');
+    }
+  }, [router]);
+}
+
 export default function App({ Component, pageProps }: AppProps) {
+  useAuthProtection(); // Invoke the custom hook
+
   return (
     <>
       <Head>
