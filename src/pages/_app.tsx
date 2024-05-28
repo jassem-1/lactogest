@@ -1,3 +1,4 @@
+// src/pages/_app.tsx
 import '@/styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,7 +9,8 @@ import type { AppProps } from 'next/app';
 import { Slide, ToastContainer } from 'react-toastify';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import Application from '@/components/Application';
+import AdminLayout from '@/components/AdminLayout/Layout';
+import type { NextPageWithLayout } from '@/types/nextPageWithLayout';
 
 const queryClient = new QueryClient();
 
@@ -26,8 +28,15 @@ function useAuthProtection() {
   }, [router]);
 }
 
-export default function App({ Component, pageProps }: AppProps) {
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+export default function App({ Component, pageProps }: AppPropsWithLayout) {
   useAuthProtection(); // Invoke the custom hook
+
+  // Check if the component has a getLayout function
+  const getLayout = Component.getLayout || ((page) => <AdminLayout>{page}</AdminLayout>);
 
   return (
     <>
@@ -45,7 +54,8 @@ export default function App({ Component, pageProps }: AppProps) {
           bodyClassName={'text-sm rounded-md duration-200'}
           transition={Slide}
         />
-        <Application Component={Component} pageProps={pageProps} />
+        {/* Apply the layout */}
+        {getLayout(<Component {...pageProps} />)}
       </QueryClientProvider>
     </>
   );

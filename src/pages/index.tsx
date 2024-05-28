@@ -22,6 +22,8 @@ export default function Home() {
     const result = await response.json();
     if (result.token) {
       localStorage.setItem("token", result.token);
+      console.error("logged in succefully", result.token);
+
       router.push("/dashboard");
     } else {
       console.error("Failed to log in:", result.error);
@@ -56,4 +58,7 @@ export default function Home() {
       </p>
     </form>
   );
+}
+Home.getLayout = function getLayout(page: any) {
+  return <>{page}</>; // Do not wrap in the AdminLayout
 }

@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-export default function deleteWorkerPointage({ id }: any) {
+export default function DeleteWorkerPointage({ id }: any) {
   const router = useRouter();
   const deleteWorkerPointage = async () => {
     const confirmed = confirm('Are you sure?');

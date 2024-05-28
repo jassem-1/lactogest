@@ -29,16 +29,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             JWT_SECRET,
             { expiresIn: '1h' } // You can adjust the expiration as needed
           );
-        if (user.role === 'user') {
-            res.status(200).json({ token, message: 'Logged in successfully as user' });
+          res.status(200).json({ token, message: `Logged in successfully as ${user.role}` });
+          console.log( token, `Logged in successfully as ${user.role}` )
 
-        } else if (user.role === 'admin') {
-            res.status(200).json({ token, message: 'Logged in successfully as admin' });
-        }
       } else {
         res.status(404).json({ error: 'User not found' });
       }
-    } catch (error) {
+    } catch (error) {   
       res.status(500).json({ error: 'Internal server error' });
     }
   } else {
