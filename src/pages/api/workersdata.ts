@@ -8,7 +8,7 @@ const fetchData = async () => {
   try {
     const client = await pool.connect();
     console.log('database connected');
-    const result = await client.query('SELECT * FROM public."Dim_Employe"');
+    const result = await client.query('SELECT * FROM public."Dim_Employe" ORDER BY "MATRICULE" ASC');
     const data = result.rows;
     console.log('fetch data >>>>', data);
     return data;
@@ -28,26 +28,24 @@ fetchData()
     console.error('error fetching', error);
   });
 
-export default function handler(req: any, res: any) {
+export default async function handler(req, res) {
   const { method, body } = req;
-  //fetchData().then(data => {console.log("handler data",data)})
-  //res.status(200).json({ text: 'Hello' });
 
-  fetchData().then((data) => {
-    console.log('handler data', data);
+  try {
+    let data = await fetchData();
+    console.log('Handler data:', data);
 
     switch (method) {
       case 'GET':
         res.status(200).json(data);
         break;
       case 'POST':
-        const newData = {
-          id: data.length + 1,
-          text: body.text,
-          completed: false,
-        };
-        data.push(newData);
-        res.status(201).json(newData);
+        const { MATRICULE, NOM_PRENOM, Cycle, Date_de_naissance, age, civilite, DROIT_CG, Situation_familiale, Chef_de_famille, CATEGORIE_PROFESSIONNELLE } = body;
+        const client = await pool.connect();
+        const result = await client.query('INSERT INTO public."Dim_Employe" ("MATRICULE", "NOM_PRENOM", "Cycle", "Date_de_naissance", "age", "civilite", "DROIT_CG", "Situation_familiale", "Chef_de_famille", "CATEGORIE_PROFESSIONNELLE") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', [MATRICULE, NOM_PRENOM, Cycle, Date_de_naissance, age, civilite, DROIT_CG, Situation_familiale, Chef_de_famille, CATEGORIE_PROFESSIONNELLE]);
+        const newWorker = result.rows[0];
+        client.release();
+        res.status(201).json(newWorker);
         break;
       case 'PUT':
         const { id, text, completed } = body;
@@ -67,5 +65,8 @@ export default function handler(req: any, res: any) {
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
         res.status(405).end(`Method ${method} Not Allowed`);
     }
-  });
+  } catch (error) {
+    console.error('Error handling request:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 }

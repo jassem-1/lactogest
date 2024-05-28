@@ -11,14 +11,17 @@ import {
 import { MoreVertical, Trash } from 'lucide-react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import Modal from 'react-modal';
+import AddWorkerForm from './addWorker/AddWorkerForm';
+
+Modal.setAppElement('#__next'); // To prevent screen readers from reading main content when modal is open
 
 function WorkersList() {
   const router = useRouter();
   const [data, setData] = useState<any>([]);
-  const [text, setText] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
-    //get workers list
     async function fetchdata1() {
       try {
         const res = await fetch('http://localhost:4000/api/workersdata')
@@ -33,53 +36,23 @@ function WorkersList() {
     fetchdata1();
   }, []);
 
-  /*  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const response = await fetch('http://localhost:4000/api/workersdata', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text }),
-    });
-    const data = await response.json();
-    let tempData=[...data, data]
-    setData(tempData);
-    setText('');
-  };
-*/
-
-  /*  const handleDelete = async (id: any) => {
-    await fetch('http://localhost:4000/api/workersdata', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id }),
-    });
-    setData(data.filter((todo: any) => todo.id !== id));
-  };
-*/
-
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <div className="flex-1 flex flex-col p-8 overflow-auto">
         <div className="col-span-9">
-          <header className="flex pb-6 flex-col">
+          <header className="flex pb-6 justify-between items-center">
             <h1 className="text-3xl font-bold text-teal-400">
               Liste des employés
             </h1>
+            <button
+              className="btn btn-primary"
+              onClick={() => setModalIsOpen(true)}
+            >
+              Ajouter un employé
+            </button>
           </header>
         </div>
         <div className="overflow-x-auto shadow-lg rounded-md border">
-          <ul>
-            {/*data.map((data: any) => (
-              <li key={data.id}>
-                {data.text}
-                <button onClick={() => handleDelete(data.id)}>Delete</button>
-              </li>
-            ))*/}
-          </ul>
           <Table className="overflow-hidden bg-white">
             <TableHeader>
               <TableRow>
@@ -113,7 +86,7 @@ function WorkersList() {
             </TableHeader>
             <TableBody>
               {data.map((data: any) => (
-                <TableRow>
+                <TableRow key={data.MATRICULE}>
                   <TableCell className="whitespace-nowrap">
                     {data.MATRICULE}
                   </TableCell>
@@ -144,15 +117,17 @@ function WorkersList() {
                   <TableCell className="whitespace-nowrap">
                     {data.CATEGORIE_PROFESSIONNELLE}
                   </TableCell>
-                  <TableCell className="flex justify-end">
-                    <MoreVertical
-                      size={14}
+                  <TableCell className="whitespace-nowrap text-right">
+                    <button
+                      className="btn btn-sm"
                       onClick={() =>
                         router.push(`/updateWorker/${data.MATRICULE}`)
                       }
-                    />
+                    >
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
                   </TableCell>
-                  <TableCell className="flex justify-end">
+                  <TableCell className="whitespace-nowrap text-right">
                     <Trash
                       size={14}
                       onClick={() =>
@@ -166,6 +141,23 @@ function WorkersList() {
           </Table>
         </div>
       </div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Add Worker Modal"
+        className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75"
+        overlayClassName="fixed inset-0"
+      >
+        <div className="bg-white rounded-lg p-8 w-full max-w-md mx-auto">
+          <AddWorkerForm />
+          <button
+            className="btn btn-secondary mt-4"
+            onClick={() => setModalIsOpen(false)}
+          >
+            Fermer
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

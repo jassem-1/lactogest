@@ -4,7 +4,7 @@ const pool = new Pool({
   host: 'localhost',
   port: 5432,
   user: 'postgres',
-  password: 'jass',
+  password: '0000',
   database: 'TarakDB',
 });
 
@@ -29,7 +29,7 @@ export default async function handler(req: any, res: any) {
       console.log('cg sans solde from query', newcg_sans_solde);
 
       const result = await client.query(
-        'UPDATE public."fact" SET "CG_AUT_SANS_SOLDE_Jour" = $1, "CONGES_EXCEPTIONNEL_Jour" = $2, "CIRCONSITION_Jour" = $3, "CG_MAR_Jour" = $4, "NAISSANCE_Jour" = $5, "DECES_Jour" = $6, "JCP_PRIS_Jour" = $7, "H_JF_Jour" = $8 WHERE "MATRICULE" = $9 RETURNING *',
+        'UPDATE public."FACT" SET "CG_AUT_SANS_SOLDE_Jour" = $1, "CONGES_EXCEPTIONNEL_Jour" = $2, "CIRCONSITION_Jour" = $3, "CG_MAR_Jour" = $4, "NAISSANCE_Jour" = $5, "DECES_Jour" = $6, "JCP_PRIS_Jour" = $7, "H_JF_Jour" = $8 WHERE "MATRICULE" = $9 RETURNING *',
         [
           newcg_sans_solde,
           newcg_expcionnel,
@@ -53,7 +53,7 @@ export default async function handler(req: any, res: any) {
     try {
       const client = await pool.connect();
       const result = await client.query(
-        'SELECT * FROM public."fact" WHERE "MATRICULE" = $1',
+        'SELECT * FROM public."FACT" WHERE "MATRICULE" = $1',
         [id],
       );
       client.release();
@@ -71,7 +71,7 @@ export default async function handler(req: any, res: any) {
     try {
       const client = await pool.connect();
       const result = await client.query(
-        'DELETE FROM public."fact" WHERE "MATRICULE" = $1 RETURNING *',
+        'DELETE FROM public."FACT" WHERE "MATRICULE" = $1 RETURNING *',
         [id],
       );
       client.release();
