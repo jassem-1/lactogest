@@ -1,4 +1,4 @@
-import { BookUser, BookX, CalendarCheck, LineChart, Users } from "lucide-react";
+import { BookUser, BookX, CalendarCheck, History, LineChart, Users } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage, Button, Label } from "../ui";
@@ -172,7 +172,16 @@ export const SideBar = ({ className, ...props }: SideBarProps) => {
                   router.pathname === "/historique" ? "bg-green-400" : ""
                 } hover:bg-green-400 rounded-xl font-bold text-sm py-3 px-4 w-full`}
               >
-                historique{" "}
+                {isSidebarOpen ? (
+                  <>
+                    <History className="mr-2" />
+                    <Label className="font-bold text-purple-800">
+                      Historique
+                    </Label>
+                  </>
+                ) : (
+                  <History />
+                )}
               </Button>
             </li>
           )}

@@ -1,4 +1,4 @@
-"use client" ;
+"use client";
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import { toast, ToastContainer } from 'react-toastify';
@@ -52,11 +52,39 @@ export default function Form() {
         draggable
         pauseOnHover
       />
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2 mx-auto max-w-md mt-10">
-        <input name="username" type="text" required className="border border-black text-black" placeholder="Username" disabled={loading} />
-        <input name="email" type="email" required className="border border-black text-black" placeholder="Email" disabled={loading} />
-        <input name="password" type="password" required className="border border-black text-black" placeholder="Password" disabled={loading} />
-        <button type="submit" disabled={loading}>Register</button>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 mx-auto max-w-md mt-10 p-6 bg-white shadow-md rounded-lg">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Register</h2>
+        <input 
+          name="username" 
+          type="text" 
+          required 
+          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-700" 
+          placeholder="Username" 
+          disabled={loading} 
+        />
+        <input 
+          name="email" 
+          type="email" 
+          required 
+          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-700" 
+          placeholder="Email" 
+          disabled={loading} 
+        />
+        <input 
+          name="password" 
+          type="password" 
+          required 
+          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-700" 
+          placeholder="Password" 
+          disabled={loading} 
+        />
+        <button 
+          type="submit" 
+          disabled={loading} 
+          className={`w-full py-3 rounded-lg text-white ${loading ? 'bg-emerald-300' : 'bg-emerald-500 hover:bg-emerald-600'} transition-colors duration-200 ease-in-out`}
+        >
+          {loading ? 'Registering...' : 'Register'}
+        </button>
       </form>
     </>
   );

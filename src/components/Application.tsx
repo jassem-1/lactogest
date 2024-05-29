@@ -1,10 +1,6 @@
-import React, { useEffect } from 'react';
 import { AppProps } from 'next/app';
-import Layout from './Layout/Layout';
 import { useRouter } from 'next/router';
 import AdminLayout from './AdminLayout';
-import { Loader2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 
 interface ApplicationProps {
   Component: any;
@@ -17,7 +13,7 @@ function Application({ Component, pageProps }: ApplicationProps) {
   //   retry: 2,
   //   queryKey: ['getMe', router.pathname],
   //   queryFn: () => api.auth.getMe(),
-  //   refetchInterval: 10000,
+  //   refetchInterval: 1jass,
   //   // retry: false,
   //   refetchOnWindowFocus: false,
   //   enabled:

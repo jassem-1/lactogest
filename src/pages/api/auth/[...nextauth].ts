@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             { userId: user.id, email: user.email, role: user.role },
             JWT_SECRET,
             { expiresIn: '1h' } // You can adjust the expiration as needed
-          );
+          );    
           res.status(200).json({ token, message: `Logged in successfully as ${user.role}` });
           console.log( token, `Logged in successfully as ${user.role}` )
 

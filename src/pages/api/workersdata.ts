@@ -1,70 +1,108 @@
-// pages/api/data.js
+import { NextApiRequest, NextApiResponse } from "next";
+import pool from "@/utils/postgres";
 
 let data: any = [];
-import pool from '../../utils/postgres';
 
 const fetchData = async () => {
+  let client;
   try {
-    const client = await pool.connect();
-    console.log('database connected');
-    const result = await client.query('SELECT * FROM public."Dim_Employe"');
+    client = await pool.connect();
+    console.log("database connected");
+    const result = await client.query(
+      'SELECT * FROM public."Dim_Employe" ORDER BY "MATRICULE" ASC',
+    );
     const data = result.rows;
-    console.log('fetch data >>>>', data);
+    console.log("fetch data >>>>", data);
     return data;
-    client.release();
-    //return NextResponse.json(result.rows[1].NOM_PRENOM);
   } catch (error) {
-    console.error('error fetching DB', error);
+    console.error("error fetching DB", error);
     throw error;
+  } finally {
+    if (client) client.release();
   }
 };
 
 fetchData()
   .then((data) => {
-    console.log('recevedata', data);
+    console.log("received data", data);
   })
   .catch((error) => {
-    console.error('error fetching', error);
+    console.error("error fetching", error);
   });
 
-export default function handler(req: any, res: any) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const { method, body } = req;
-  //fetchData().then(data => {console.log("handler data",data)})
-  //res.status(200).json({ text: 'Hello' });
 
-  fetchData().then((data) => {
-    console.log('handler data', data);
+  try {
+    let data = await fetchData();
+    console.log("Handler data:", data);
 
     switch (method) {
-      case 'GET':
+      case "GET":
         res.status(200).json(data);
         break;
-      case 'POST':
-        const newData = {
-          id: data.length + 1,
-          text: body.text,
-          completed: false,
-        };
-        data.push(newData);
-        res.status(201).json(newData);
+      case "POST": {
+        const {
+          MATRICULE,
+          NOM_PRENOM,
+          Cycle,
+          Date_de_naissance,
+          age,
+          civilite,
+          DROIT_CG,
+          Situation_familiale,
+          Chef_de_famille,
+          CATEGORIE_PROFESSIONNELLE,
+        } = body;
+        const client = await pool.connect();
+        try {
+          const result = await client.query(
+            'INSERT INTO public."Dim_Employe" ("MATRICULE", "NOM_PRENOM", "Cycle", "Date_de_naissance", "age", "civilite", "DROIT_CG", "Situation_familiale", "Chef_de_famille", "CATEGORIE_PROFESSIONNELLE") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+            [
+              MATRICULE,
+              NOM_PRENOM,
+              Cycle,
+              Date_de_naissance,
+              age,
+              civilite,
+              DROIT_CG,
+              Situation_familiale,
+              Chef_de_famille,
+              CATEGORIE_PROFESSIONNELLE,
+            ],
+          );
+          const newWorker = result.rows[0];
+          res.status(201).json(newWorker);
+        } finally {
+          client.release();
+        }
         break;
-      case 'PUT':
+      }
+      case "PUT": {
         const { id, text, completed } = body;
         const index = data.findIndex((myData: any) => myData.id === id);
         if (index !== -1) {
           data[index] = { id, text, completed };
           res.status(200).json(data[index]);
         } else {
-          res.status(404).json({ message: 'myData not found' });
+          res.status(404).json({ message: "Data not found" });
         }
         break;
-      case 'DELETE':
+      }
+      case "DELETE": {
         data = data.filter((myData: any) => myData.id !== body.id);
-        res.status(200).json({ message: 'myData deleted successfully' });
+        res.status(200).json({ message: "Data deleted successfully" });
         break;
+      }
       default:
-        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
+        res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
         res.status(405).end(`Method ${method} Not Allowed`);
     }
-  });
+  } catch (error) {
+    console.error("Error handling request:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }

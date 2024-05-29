@@ -7,7 +7,7 @@ const fetchData = async () => {
   try {
     const client = await pool.connect();
     console.log('database connected');
-    const result = await client.query('SELECT * FROM public."FACT"');
+    const result = await client.query('SELECT * FROM public."FACT" ');
     const data = result.rows;
     console.log('fetch data >>>>', data);
     return data;

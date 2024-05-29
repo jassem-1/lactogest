@@ -22,7 +22,7 @@ export default function Home() {
     const result = await response.json();
     if (result.token) {
       localStorage.setItem("token", result.token);
-      console.error("logged in succefully", result.token);
+      console.error("logged in successfully", result.token);
 
       router.push("/dashboard");
     } else {
@@ -31,34 +31,40 @@ export default function Home() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-2 mx-auto max-w-md mt-10"
-    >
-      <input
-        name="email"
-        type="email"
-        required
-        className="border border-black text-black"
-        placeholder="Email"
-      />
-      <input
-        name="password"
-        type="password"
-        required
-        className="border border-black text-black"
-        placeholder="Password"
-      />
-      <button type="submit">Login</button>
-      <p>
-        Dont have an account?{" "}
-        <a href="/register" className="text-blue-500">
-          Sign up
-        </a>
-      </p>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-6 bg-white shadow-md rounded-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
+        <input
+          name="email"
+          type="email"
+          required
+          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-700"
+          placeholder="Email"
+        />
+        <input
+          name="password"
+          type="password"
+          required
+          className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-700"
+          placeholder="Password"
+        />
+        <button
+          type="submit"
+          className="w-full py-3 rounded-lg text-white bg-emerald-500 hover:bg-emerald-600 transition-colors duration-200 ease-in-out"
+        >
+          Login
+        </button>
+        <p className="text-center text-gray-600">
+          Dont have an account?{" "}
+          <a href="/register" className="text-emerald-500 hover:text-emerald-600">
+            Sign up
+          </a>
+        </p>
+      </form>
+    </div>
   );
 }
+
 Home.getLayout = function getLayout(page: any) {
   return <>{page}</>; // Do not wrap in the AdminLayout
 }
